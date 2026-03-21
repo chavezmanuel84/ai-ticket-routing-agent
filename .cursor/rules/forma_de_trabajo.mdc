@@ -1,0 +1,141 @@
+---
+alwaysApply: true
+---
+
+# Forma de trabajo - AI Ticket Routing Agent
+
+## Project Overview
+
+Este proyecto consiste en un sistema basado en un AI Agent diseñado para analizar tickets de soporte y producto en un entorno multi-equipo.  
+El agente representa la lógica central de toma de decisiones y puede ser utilizado a través de diferentes interfaces o integraciones.  
+
+El sistema evalúa contexto y sugiere decisiones basadas en la información disponible, y en algunos casos puede ejecutar acciones derivadas de estas decisiones, previa validación o autorización humana.  
+
+Su objetivo es transformar criterios humanos de análisis en procesos estructurados, consistentes y testeables.
+
+El sistema debe ser capaz de:
+
+- Interpretar contexto incompleto o ambiguo  
+- Evaluar evidencia disponible  
+- Proponer acciones coherentes con el contexto  
+- Explicar claramente el razonamiento detrás de cada decisión  
+- Contribuir a mejorar la calidad y consistencia de la información analizada  
+
+El enfoque del proyecto no es automatizar respuestas, sino modelar correctamente el proceso de toma de decisiones y su ejecución controlada.
+
+---
+
+## Development Philosophy
+
+Este proyecto se construye bajo un enfoque donde el comportamiento esperado se define antes de cualquier implementación.  
+El objetivo es construir un sistema confiable, explicable y fácil de evolucionar, basado en definición explícita de comportamiento y validación continua.  
+Cada cambio debe estar respaldado por ejemplos claros de comportamiento, y el sistema debe evolucionar de forma consistente, evitando múltiples formas de resolver el mismo problema.
+
+---
+
+## Development Rules
+
+### 1. Understand Before Acting
+
+Antes de implementar cualquier cambio:
+
+- Entender completamente el problema  
+- Identificar el comportamiento actual  
+- Evitar asumir información implícita  
+
+### 2. Define Before Implementing (TDD)
+
+No escribir código sin antes definir:
+
+- Input esperado  
+- Output esperado  
+- Casos de prueba  
+
+Todo cambio debe ser validado contra estos casos.
+
+### 3. Reproduce Before Fixing
+
+Antes de corregir un problema:
+
+- Definir un caso que reproduzca el comportamiento incorrecto  
+- Especificar output actual vs esperado  
+
+No corregir sin un escenario claro.
+
+### 4. Small and Controlled Changes
+
+- Implementar cambios pequeños y verificables  
+- Evitar modificaciones grandes sin validación intermedia  
+
+### 5. Reuse Before Creating
+
+Antes de implementar una solución:
+
+- Revisar herramientas y Skills disponibles  
+- Identificar si ya existe una forma establecida de resolver el problema  
+- Reutilizar lógica existente cuando sea posible  
+
+Evitar duplicación y soluciones paralelas.
+
+---
+
+## TDD Workflow
+
+### Paso 1: Definir el caso
+
+Describir claramente el escenario que se quiere resolver.
+
+### Paso 2: Definir input y output esperado
+
+Especificar:
+
+- Qué información entra  
+- Qué resultado se espera  
+
+### Paso 3: Definir casos de prueba
+
+Incluir:
+
+- Casos normales  
+- Casos edge  
+- Casos con información incompleta  
+
+### Paso 4: Implementar solución mínima
+
+Desarrollar únicamente lo necesario para cumplir con los casos definidos.
+
+### Paso 5: Validar comportamiento
+
+Verificar que la implementación cumple con todos los casos.
+
+---
+
+## Implementation Guidelines
+
+- Priorizar soluciones simples y claras  
+- Evitar duplicación de lógica  
+- Diseñar pensando en explicabilidad  
+- Asegurar que cada decisión pueda ser testeada  
+
+---
+
+## 🐛 Debugging Approach
+
+Cuando algo no funciona correctamente:
+
+1. No modificar la lógica inmediatamente  
+2. Definir el caso problemático:
+   - Input  
+   - Output actual  
+   - Output esperado  
+3. Ajustar la implementación basado en ese caso  
+
+---
+
+## Anti-Patterns
+
+- Implementar lógica sin definir casos previos  
+- Tomar decisiones sin suficiente contexto  
+- Introducir complejidad innecesaria  
+- Depender de comportamiento implícito  
+- No validar cambios antes de considerarlos completos
