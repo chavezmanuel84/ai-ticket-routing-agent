@@ -4,6 +4,9 @@
         "name": "Supabase MCP",
         "url": "http://127.0.0.1:54321/mcp",
         "headers": {}
+      },
+      "Atlassian-MCP-Server": {
+        "url": "https://mcp.atlassian.com/v1/mcp"
       }
     }
   }

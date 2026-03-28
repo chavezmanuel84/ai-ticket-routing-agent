@@ -68,7 +68,68 @@ Para cada criterio de aceptación, al menos un test (o caso parametrizado) que:
 
 Este skill complementa la planificación y validación descritas en las reglas del repo: caso de uso → criterios → implementación → validar con herramientas del proyecto. Aquí el énfasis es **tests antes y verificación acotada**.
 
+## Contexto de tests en este proyecto
+
+Estado actual del repositorio (base inicial):
+
+- Runner: `Jest` + `@testing-library/react`.
+- Config principal: `jest.config.mjs`.
+- Setup de matchers: `jest.setup.ts`.
+- Scripts:
+  - `npm test` -> ejecuta la suite completa.
+  - `npm run test:watch` -> modo watch para iterar cambios locales.
+
+Ubicación recomendada (actualmente usada):
+
+- Tests co-located junto al módulo que validan.
+- Ejemplos actuales:
+  - `app/components/dashboard-shell.test.tsx`
+  - `lib/dashboard/data.test.ts`
+
+Regla práctica de ubicación:
+
+- Si el test valida UI/componente, crear `*.test.tsx` junto al componente en `app/components`.
+- Si valida lógica pura, crear `*.test.ts` junto al módulo en `lib/...`.
+- Evitar suites globales enormes; preferir suites pequeñas por responsabilidad.
+
+## Cómo implementar tests (patrón mínimo)
+
+Para cada criterio de aceptación:
+
+1. Crear bloque `describe("<comportamiento>")`.
+2. Agregar al menos:
+   - 1 test de caso normal.
+   - 1 test de caso borde.
+   - 1 test de entrada incompleta/inválida cuando aplique.
+3. Preparar datos explícitos (fixtures simples locales) sin depender de servicios externos.
+4. Aserciones sobre contrato visible:
+   - UI: elementos/estado visibles esperados.
+   - Lógica: salida esperada y comportamiento estable ante mutaciones o faltantes.
+
+Checklist rápido por archivo de test:
+
+```md
+- [ ] El nombre del test describe comportamiento esperado
+- [ ] Datos de entrada son explícitos y legibles
+- [ ] Aserciones validan resultado funcional, no internals frágiles
+- [ ] Cubre normal + borde + incompleto/inválido (si aplica)
+```
+
+## Cómo verificar en este proyecto
+
+Secuencia recomendada al cerrar un cambio:
+
+1. Ejecutar `npm test`.
+2. Ejecutar `npm run lint`.
+3. Si el cambio toca build o tipos, ejecutar `npm run build`.
+
+Reglas de verificación:
+
+- Verificar primero lo tocado por el cambio (alcance acotado).
+- Si falla algo fuera de alcance, documentar impacto antes de expandir trabajo.
+- No marcar completado hasta tener tests verdes para los criterios acordados.
+
 ## Límites del skill
 
-- No prescribe un framework concreto; usar el stack de tests del repo (p. ej. Jest/Vitest/Playwright según corresponda).
+- Toma como referencia el stack actual del repo (`Jest` + Testing Library). Si el proyecto migra de runner, mantener el mismo proceso TDD y adaptar comandos.
 - No sustituye revisión humana ni criterios de producto no escritos; los hace explícitos antes de codificar.
