@@ -1,148 +1,74 @@
 ---
 name: defining-tdd
-description: Estructura el proceso de TDD para definir casos de uso, inputs/outputs esperados y tests antes de implementar logica. Use cuando el usuario pida implementar features, corregir bugs, refactorizar o validar comportamiento en este proyecto con enfoque de decisiones explicables.
+description: >-
+  Establece un proceso claro de TDD en el proyecto: casos de uso y criterios de
+  aceptación antes de código, tests explícitos (normales, borde, entradas
+  incompletas) y verificación acotada al alcance del cambio. Use al implementar
+  features, al refactorizar con criterios verificables o cuando el usuario pida
+  TDD, pruebas primero o desarrollo guiado por tests.
 ---
 
 # Defining TDD
 
 ## Objetivo
 
-Asegurar que nunca se implemente logica sin definir primero los tests y el comportamiento esperado.
+Guiar un flujo repetible donde el comportamiento esperado y los tests queden definidos **antes** de la implementación, y la verificación confirme solo lo que el cambio debe cumplir.
 
-## Cuando aplicar este skill
+## Cuándo aplicar
 
-Aplicar cuando se pida:
-- implementar una nueva logica o feature
-- corregir un bug
-- cambiar reglas de decision
-- refactorizar comportamiento existente
-- validar que una decision del sistema sea explicable y testeable
+- Nueva funcionalidad o cambio de comportamiento observable.
+- Refactor que debe preservar contratos o resultados específicos.
+- Cuando el usuario pida TDD, “tests primero” o criterios de aceptación explícitos.
 
-## Regla no negociable
+## Flujo recomendado (orden estricto)
 
-No escribir ni modificar logica productiva hasta completar:
-1. caso(s) de uso definidos
-2. input y output esperados por caso
-3. tests de casos normales, edge cases y casos con informacion incompleta
+Seguir este orden salvo que el usuario indique una excepción justificada (por ejemplo spike de exploración acotado y descartable):
 
-Si falta alguno, detener implementacion y completar definicion primero.
+1. **Entender el caso de uso** — Qué problema resuelve y cuál es el comportamiento esperado.
+2. **Definir criterios de aceptación** — Condiciones verificables que definen “hecho”; evitar vaguedades (“mejor”, “rápido”) sin medida o ejemplo.
+3. **Escribir o definir los tests** — Traducir criterios en casos de prueba concretos (nombres, datos, aserciones). En TDD clásico: tests que fallen primero; si no se ejecutan aún, dejar los casos especificados con la misma claridad que código de test.
+4. **Implementar la solución mínima** — Solo lo necesario para que los tests definidos pasen; evitar alcance extra no cubierto por criterios o tests acordados.
+5. **Verificar que los tests pasen** — Ejecutar la suite relevante (`npm test`, `npm run test`, o el comando del proyecto) y confirmar verde en el **alcance del cambio** (ver abajo).
 
-## Flujo obligatorio (TDD)
-
-Copiar este checklist y marcar progreso:
+Usar este checklist como referencia para validar el progreso:
 
 ```md
 TDD Progress
-- [ ] 1. Definir caso(s) de uso
-- [ ] 2. Especificar input/output esperado por caso
-- [ ] 3. Diseñar matriz de pruebas (normal, edge, incompleta)
-- [ ] 4. Implementar o ajustar tests
-- [ ] 5. Ejecutar tests (debe fallar si es cambio de comportamiento)
-- [ ] 6. Implementar solucion minima
-- [ ] 7. Ejecutar tests (deben pasar)
-- [ ] 8. Verificar explicabilidad de cada decision
+- [ ] 1. Caso de uso entendido (entrada/salida/comportamiento)
+- [ ] 2. Criterios de aceptación acordados y verificables
+- [ ] 3. Tests definidos o escritos (antes o en lockstep con implementación mínima)
+- [ ] 4. Implementación mínima alineada a esos tests
+- [ ] 5. Tests ejecutados y pasando en el alcance del cambio
 ```
 
-### 1) Definir caso(s) de uso
+## Reglas no negociables
 
-Para cada caso, documentar en texto breve:
-- contexto
-- objetivo de decision
-- restriccion principal
+- **No implementar sin comportamiento esperado claro.** Si faltan criterios o hay ambigüedad, aclarar o documentar supuestos explícitos **antes** de codificar solución productiva (un spike puede ser la excepción temporal, no sustituye criterios).
+- **Priorizar la definición de tests respecto al código nuevo.** Los tests materializan el contrato; el código cumple ese contrato.
+- **Los tests deben cubrir**, cuando aplique al caso de uso:
+  - **Casos normales** — Flujo feliz representativo.
+  - **Casos borde** — Límites (vacío, máximo, cero, límites de dominio).
+  - **Entradas incompletas o inválidas** — Errores de validación, faltantes, formatos incorrectos, según lo que el producto deba garantizar.
 
-Plantilla:
+## Verificación del alcance
 
-```md
-Caso: <nombre>
-Contexto: <situacion real>
-Decision esperada: <que deberia decidir el sistema>
-Razon principal: <evidencia o regla que lo justifica>
-```
+- Enfocar la verificación **solo en el alcance del cambio**: tests nuevos o afectados, regresión razonable en módulos tocados.
+- No expandir la suite ni el producto “por si acaso” sin criterio ligado al caso de uso actual.
+- Si falla un test fuera del alcance, distinguir: regresión real vs. test frágil no relacionado; no “arreglar” a ciegas sin entender.
 
-### 2) Especificar input/output esperado
+## De casos de uso a tests claros
 
-Para cada caso, explicitar:
-- **Input**: datos disponibles (incluyendo campos faltantes si aplica)
-- **Output esperado**: decision/resultado exacto y estructura esperada
+Para cada criterio de aceptación, al menos un test (o caso parametrizado) que:
 
-Plantilla:
+- Nombre al comportamiento (`describe`/`it` o equivalente legible).
+- Fije entrada conocida y resultado o error esperado.
+- Evite depender de detalles internos no esenciales (preferir API pública o contrato estable).
 
-```md
-Input:
-  <payload o campos relevantes>
+## Integración con el resto del flujo del proyecto
 
-Output esperado:
-  <resultado esperado>
-```
+Este skill complementa la planificación y validación descritas en las reglas del repo: caso de uso → criterios → implementación → validar con herramientas del proyecto. Aquí el énfasis es **tests antes y verificación acotada**.
 
-### 3) Diseñar matriz de pruebas minima
+## Límites del skill
 
-Incluir siempre estas categorias:
-- **Normal**: escenario comun con informacion suficiente
-- **Edge case**: limites, combinaciones raras o valores extremos
-- **Informacion incompleta**: datos faltantes, ambiguos o parciales
-
-Plantilla:
-
-```md
-- [ ] Normal: <descripcion> -> <resultado esperado>
-- [ ] Edge: <descripcion> -> <resultado esperado>
-- [ ] Incompleta: <descripcion> -> <resultado esperado>
-```
-
-### 4) Implementar tests primero
-
-Crear/ajustar tests antes de tocar logica productiva.
-
-Requisitos:
-- cada caso definido debe tener al menos un test trazable
-- nombres de test deben describir la decision esperada
-- test debe fallar cuando el comportamiento actual no cumple lo definido
-
-### 5) Implementar solucion minima
-
-Solo despues de tener tests definidos:
-- cambiar la minima cantidad de logica necesaria
-- evitar duplicacion
-- mantener decisiones explicitas y faciles de rastrear
-
-### 6) Verificar cumplimiento y explicabilidad
-
-Antes de cerrar:
-- confirmar que todos los tests de la matriz pasan
-- validar cobertura de normal/edge/incompleta
-- verificar que cada decision tenga razon explicable
-
-Checklist final:
-
-```md
-- [ ] Ninguna logica se implemento antes de definir tests
-- [ ] Todos los casos de uso tienen input/output esperado
-- [ ] Existen tests para normal, edge e incompleta
-- [ ] Implementacion cumple los casos definidos
-- [ ] Cada decision puede explicarse con evidencia/regla
-```
-
-## Formato de reporte recomendado
-
-Cuando se entregue un cambio, responder con esta estructura:
-
-```md
-## Casos definidos
-- Caso A: ...
-- Caso B: ...
-
-## Input/Output esperado
-- Caso A: input ..., output ...
-- Caso B: input ..., output ...
-
-## Matriz de pruebas
-- Normal: ...
-- Edge: ...
-- Incompleta: ...
-
-## Resultado de validacion
-- Tests antes de implementar: <estado>
-- Tests finales: <estado>
-- Decisiones explicables: <si/no + evidencia>
-```
+- No prescribe un framework concreto; usar el stack de tests del repo (p. ej. Jest/Vitest/Playwright según corresponda).
+- No sustituye revisión humana ni criterios de producto no escritos; los hace explícitos antes de codificar.
