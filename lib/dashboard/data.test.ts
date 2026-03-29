@@ -5,8 +5,8 @@ describe("getDashboardSectionsMock", () => {
     const sections = getDashboardSectionsMock();
 
     expect(sections.map((section) => section.title)).toEqual([
-      "Review",
       "Betel Sprint",
+      "Review",
       "PRODG ToDo",
     ]);
   });

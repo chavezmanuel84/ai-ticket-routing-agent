@@ -43,10 +43,11 @@ alwaysApply: true
 
 5. **Uso de SubAgentes:**  
    Delegar tareas específicas durante el desarrollo cuando sea útil  
-   - ejecución de pruebas  
-   - verificación de funcionalidades  
+   - **Pruebas automatizadas:** el subagente `qa-engineer` ejecuta y verifica tests (Jest, Testing Library) según el alcance acordado. El agente principal **no** ejecuta `npm test` ni equivalentes directamente.  
+   - verificación de funcionalidades (cuando aplique fuera de tests automatizados)  
    - revisión de cambios  
 
+   El agente principal sigue definiendo casos de uso, criterios de aceptación y qué debe validarse; la ejecución y verificación de la suite queda en `qa-engineer`.  
    Evitar que el agente principal asuma todas las responsabilidades  
 
 6. **Simplicidad primero:**  
@@ -60,11 +61,13 @@ Para cualquier feature o implementación:
 
 2. **Definir criterios de aceptación:** Qué debe pasar para considerar el feature como correcto  
 
-3. **Planear la implementación:** Diseñar la solución antes de escribir código  
+3. **TDD — definición (agente principal):** Antes del código productivo, definir qué tests aplican al cambio (casos normales, borde, entradas incompletas cuando corresponda) y qué se debe validar. El agente principal **no** ejecuta la suite aquí.  
 
-4. **Implementar:** Construir solo lo necesario para cumplir el caso de uso  
+4. **Planear la implementación:** Diseñar la solución antes de escribir código  
 
-5. **Validar:** Usar herramientas disponibles para verificar que el comportamiento es correcto. Evitar probar flujos innecesarios o fuera del alcance del cambio  
+5. **Implementar:** Construir solo lo necesario para cumplir el caso de uso  
+
+6. **TDD — ejecución y verificación (subagente `qa-engineer`):** Delegar la ejecución de pruebas unitarias y de componentes al subagente `qa-engineer`, acotadas al alcance del cambio. El agente principal **espera el reporte** del subagente (pass/fail, criterios cubiertos, regresión en alcance) antes de dar la tarea por finalizada. No ejecutar pruebas innecesarias fuera del contexto del cambio.  
 
 # Principios de Implementación
 
@@ -87,4 +90,7 @@ Cuando se reporte un problema:
    - Output esperado  
 3. Identificar causa raíz  
 4. Implementar solución  
-5. Validar que el problema se resolvió  
+5. Validar que el problema se resolvió:
+   - Para validación automatizada, delegar la ejecución de tests al subagente `qa-engineer`
+   - Esperar su reporte antes de dar el bug como resuelto
+   - El agente principal no ejecuta la suite directamente
